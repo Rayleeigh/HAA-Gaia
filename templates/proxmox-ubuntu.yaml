@@ -1,0 +1,30 @@
+name: "Ubuntu 22.04 Server - Proxmox"
+description: "Ubuntu 22.04 LTS server with basic configuration for Proxmox"
+provider: proxmox
+tags:
+  - ubuntu
+  - linux
+  - server
+
+config:
+  box: "generic/ubuntu2204"
+  hostname: "ubuntu-server"
+  cpus: 2
+  memory: 2048
+
+  provider_config:
+    node: "pve"
+    storage: "local-lvm"
+    disk_size: "32G"
+    ostype: "l26"
+
+  networks:
+    - type: "private_network"
+      ip: "192.168.56.10"
+
+  provisioners:
+    - type: "shell"
+      inline:
+        - "apt-get update"
+        - "apt-get install -y curl wget git vim"
+        - "echo 'VM provisioned successfully!'"
