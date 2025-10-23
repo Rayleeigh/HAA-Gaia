@@ -463,20 +463,3 @@ Internally, your blocks are stored as JSON:
 ```
 
 This JSON is sent to the Vagrantfile generator API!
-
----
-
-## Summary
-
-The Template Builder lets you:
-
-✅ **Visually create** VM templates without code
-✅ **Click blocks** to add configuration
-✅ **Fill in values** in simple form fields
-✅ **Preview** generated Vagrantfile
-✅ **Save** templates for reuse
-✅ **Use conditional fields** that appear when needed
-✅ **Add multiple** network/folder/provisioner blocks
-✅ **Remove blocks** with one click
-
-**It's like building with LEGO blocks, but for VMs!** 🧱🚀
