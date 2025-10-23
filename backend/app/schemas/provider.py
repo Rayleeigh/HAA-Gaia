@@ -8,6 +8,7 @@ class ProviderType(str, Enum):
     PROXMOX = "proxmox"
     VIRTUALBOX = "virtualbox"
     VMWARE = "vmware"
+    HYPERV = "hyperv"
     WSL = "wsl"
 
 

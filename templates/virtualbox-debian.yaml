@@ -1,0 +1,46 @@
+name: "Debian 12 Server - VirtualBox"
+description: "Debian 12 (Bookworm) minimal server for VirtualBox"
+provider: virtualbox
+tags:
+  - debian
+  - linux
+  - server
+  - minimal
+
+config:
+  box: "debian/bookworm64"
+  hostname: "debian-server"
+  cpus: 2
+  memory: 2048
+
+  provider_config:
+    gui: false
+    natdnshostresolver1: "on"
+    natdnsproxy1: "on"
+
+  networks:
+    - type: "private_network"
+      ip: "192.168.56.15"
+    - type: "forwarded_port"
+      guest_port: 22
+      host_port: 2223
+    - type: "forwarded_port"
+      guest_port: 80
+      host_port: 8080
+    - type: "forwarded_port"
+      guest_port: 443
+      host_port: 8443
+
+  synced_folders:
+    - host_path: "./shared"
+      guest_path: "/srv/shared"
+
+  provisioners:
+    - type: "shell"
+      inline:
+        - "apt-get update"
+        - "apt-get install -y nginx"
+        - "apt-get install -y curl wget git"
+        - "systemctl enable nginx"
+        - "systemctl start nginx"
+        - "echo 'Debian server configured!'"

@@ -161,6 +161,172 @@ end
         template = Template(proxmox_template)
         return template.render(config)
 
+    def generate_virtualbox(self, config: Dict[str, Any]) -> str:
+        """Generate a VirtualBox-specific Vagrantfile"""
+        virtualbox_template = '''# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "{{ box }}"
+  {%- if hostname %}
+  config.vm.hostname = "{{ hostname }}"
+  {%- endif %}
+
+  {%- if networks %}
+  # Network configuration
+  {%- for network in networks %}
+  {%- if network.type == "private_network" %}
+  config.vm.network "private_network", ip: "{{ network.ip }}"
+  {%- elif network.type == "public_network" %}
+  config.vm.network "public_network"{% if network.bridge %}, bridge: "{{ network.bridge }}"{% endif %}
+  {%- elif network.type == "forwarded_port" %}
+  config.vm.network "forwarded_port", guest: {{ network.guest_port }}, host: {{ network.host_port }}
+  {%- endif %}
+  {%- endfor %}
+  {%- endif %}
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "{{ name }}"
+    {%- if cpus %}
+    vb.cpus = {{ cpus }}
+    {%- endif %}
+    {%- if memory %}
+    vb.memory = {{ memory }}
+    {%- endif %}
+    {%- if provider_config.gui %}
+    vb.gui = {{ provider_config.gui|lower }}
+    {%- endif %}
+    {%- if provider_config %}
+    {%- for key, value in provider_config.items() %}
+    {%- if key not in ['gui'] %}
+    vb.customize ["modifyvm", :id, "--{{ key }}", "{{ value }}"]
+    {%- endif %}
+    {%- endfor %}
+    {%- endif %}
+  end
+
+  {%- if provisioners %}
+  # Provisioning
+  {%- for provisioner in provisioners %}
+  {%- if provisioner.type == "shell" %}
+  {%- if provisioner.inline %}
+  config.vm.provision "shell", inline: <<-SHELL
+    {%- for line in provisioner.inline %}
+    {{ line }}
+    {%- endfor %}
+  SHELL
+  {%- elif provisioner.path %}
+  config.vm.provision "shell", path: "{{ provisioner.path }}"
+  {%- endif %}
+  {%- endif %}
+  {%- endfor %}
+  {%- endif %}
+end
+'''
+        template = Template(virtualbox_template)
+        return template.render(config)
+
+    def generate_hyperv(self, config: Dict[str, Any]) -> str:
+        """Generate a Hyper-V-specific Vagrantfile"""
+        hyperv_template = '''# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "{{ box }}"
+  {%- if hostname %}
+  config.vm.hostname = "{{ hostname }}"
+  {%- endif %}
+
+  {%- if networks %}
+  # Network configuration
+  {%- for network in networks %}
+  {%- if network.type == "private_network" %}
+  config.vm.network "private_network", ip: "{{ network.ip }}"
+  {%- elif network.type == "forwarded_port" %}
+  config.vm.network "forwarded_port", guest: {{ network.guest_port }}, host: {{ network.host_port }}
+  {%- endif %}
+  {%- endfor %}
+  {%- endif %}
+
+  config.vm.provider "hyperv" do |hv|
+    hv.vmname = "{{ name }}"
+    {%- if cpus %}
+    hv.cpus = {{ cpus }}
+    {%- endif %}
+    {%- if memory %}
+    hv.memory = {{ memory }}
+    {%- endif %}
+    {%- if provider_config.linked_clone is defined %}
+    hv.linked_clone = {{ provider_config.linked_clone|lower }}
+    {%- endif %}
+    {%- if provider_config.enable_virtualization_extensions %}
+    hv.enable_virtualization_extensions = true
+    {%- endif %}
+    {%- if provider_config.vm_integration_services %}
+    hv.vm_integration_services = {{ provider_config.vm_integration_services }}
+    {%- endif %}
+    {%- if provider_config.differencing_disk %}
+    hv.differencing_disk = true
+    {%- endif %}
+  end
+
+  {%- if provisioners %}
+  # Provisioning
+  {%- for provisioner in provisioners %}
+  {%- if provisioner.type == "shell" %}
+  {%- if provisioner.inline %}
+  config.vm.provision "shell", inline: <<-SHELL
+    {%- for line in provisioner.inline %}
+    {{ line }}
+    {%- endfor %}
+  SHELL
+  {%- elif provisioner.path %}
+  config.vm.provision "shell", path: "{{ provisioner.path }}"
+  {%- endif %}
+  {%- endif %}
+  {%- endfor %}
+  {%- endif %}
+end
+'''
+        template = Template(hyperv_template)
+        return template.render(config)
+
+    def generate_wsl(self, config: Dict[str, Any]) -> str:
+        """Generate a WSL-specific configuration (WSL doesn't use Vagrantfile)"""
+        # WSL doesn't use Vagrantfile traditionally, but we can create a setup script
+        wsl_template = '''# WSL Distribution Configuration
+# This is not a Vagrantfile - WSL distributions are managed differently
+
+# Distribution: {{ name }}
+# Base: {{ base_distro | default('Ubuntu') }}
+
+# Setup Commands:
+# 1. Import distribution:
+#    wsl --import {{ name }} {{ install_location | default('C:\\\\WSL\\\\' + name) }} {{ tarball | default('ubuntu.tar') }}
+
+{%- if default_user %}
+# 2. Create default user:
+#    wsl -d {{ name }} -u root -- useradd -m -s /bin/bash {{ default_user }}
+#    wsl -d {{ name }} -u root -- passwd {{ default_user }}
+{%- endif %}
+
+{%- if provisioners %}
+# 3. Provisioning:
+{%- for provisioner in provisioners %}
+{%- if provisioner.type == "shell" and provisioner.inline %}
+{%- for line in provisioner.inline %}
+#    wsl -d {{ name }} -- {{ line }}
+{%- endfor %}
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+
+# Access the distribution:
+# wsl -d {{ name }}
+'''
+        template = Template(wsl_template)
+        return template.render(config)
+
     def generate_from_template(self, template_content: str, config: Dict[str, Any]) -> str:
         """Generate a Vagrantfile from a custom template"""
         template = Template(template_content)

@@ -2,7 +2,7 @@
 
 **Modular Virtualization Orchestration Suite**
 
-A Portainer-like web UI for managing virtualized environments across multiple platforms (Proxmox, VirtualBox, VMware, WSL) through a unified Vagrant-based abstraction layer.
+A Portainer-like web UI for managing virtualized environments across multiple platforms (Proxmox, VirtualBox, Hyper-V, WSL) through a unified Vagrant-based abstraction layer.
 
 ## Vision
 
@@ -33,10 +33,10 @@ HAA-Gaia simplifies VM lifecycle management by providing:
 │  └──────────────────────────────────┘   │
 │  ┌──────────────────────────────────┐   │
 │  │   Provider Abstraction Layer     │   │
-│  │  ├─ Proxmox (MVP)                │   │
-│  │  ├─ VirtualBox (Future)          │   │
-│  │  ├─ VMware (Future)               │   │
-│  │  └─ WSL (Future)                  │   │
+│  │  ├─ Proxmox ✅                   │   │
+│  │  ├─ VirtualBox ✅                │   │
+│  │  ├─ Hyper-V ✅                   │   │
+│  │  └─ WSL2 ✅                      │   │
 │  └──────────────────────────────────┘   │
 │  ┌──────────────────────────────────┐   │
 │  │   Async Task Queue (Celery)      │   │
@@ -69,15 +69,24 @@ HAA-Gaia simplifies VM lifecycle management by providing:
 - **Docker & Docker Compose**: Containerized deployment
 - **PostgreSQL**: Persistent storage
 
-## MVP Features (Proxmox Provider)
+## Implemented Features
 
-- [x] Vagrantfile parser
-- [x] Vagrantfile generator from UI forms
-- [x] Template management (save, load, share)
-- [x] Proxmox provider integration
-- [x] Async VM provisioning
-- [x] Basic VM lifecycle (create, start, stop, destroy)
-- [x] Real-time operation logs
+### Core Features
+- ✅ Vagrantfile parser
+- ✅ Vagrantfile generator from UI forms
+- ✅ Template management (save, load, share)
+- ✅ Async VM provisioning with Celery
+- ✅ VM lifecycle management (create, start, stop, destroy)
+- ✅ Real-time operation logs
+- ✅ Multi-provider support
+
+### Supported Providers
+- ✅ **Proxmox VE** - Enterprise virtualization platform
+- ✅ **VirtualBox** - Cross-platform desktop virtualization
+- ✅ **Hyper-V** - Windows native hypervisor
+- ✅ **WSL2** - Windows Subsystem for Linux
+
+See [PROVIDERS.md](PROVIDERS.md) for detailed provider documentation.
 
 ## Getting Started
 
@@ -147,10 +156,9 @@ HAA-Gaia/
 - Basic web UI
 - Template system
 
-### Phase 2: Multi-Provider Support
-- VirtualBox integration
+### Phase 2: Additional Providers & Features
 - VMware integration
-- WSL integration
+- Additional cloud providers (AWS, Azure, GCP)
 
 ### Phase 3: Advanced Features
 - Multi-VM orchestration

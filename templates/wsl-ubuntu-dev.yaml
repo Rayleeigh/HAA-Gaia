@@ -1,0 +1,47 @@
+name: "Ubuntu Dev Environment - WSL2"
+description: "Ubuntu 22.04 development environment with common tools"
+provider: wsl
+tags:
+  - ubuntu
+  - linux
+  - wsl
+  - development
+
+config:
+  name: "Ubuntu-Dev"
+  base_distro: "Ubuntu"
+  source_distro: "Ubuntu"  # Clone from existing Ubuntu
+  # Or use tarball: "path/to/ubuntu.tar"
+  install_location: "C:\\WSL\\Ubuntu-Dev"
+  default_user: "developer"
+
+  provisioners:
+    - type: "shell"
+      inline:
+        - "apt-get update"
+        - "apt-get upgrade -y"
+        - "apt-get install -y build-essential"
+        - "apt-get install -y git curl wget vim"
+        - "apt-get install -y python3 python3-pip"
+        - "apt-get install -y nodejs npm"
+        - "apt-get install -y docker.io docker-compose"
+        - "usermod -aG docker $USER"
+        - "curl -fsSL https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64 -o vscode.deb"
+        - "apt-get install -y ./vscode.deb"
+        - "rm vscode.deb"
+        - "echo 'Development environment ready!'"
+
+notes: |
+  After creation, access the WSL distribution with:
+    wsl -d Ubuntu-Dev
+
+  To set the default user:
+    wsl -d Ubuntu-Dev -u root -- usermod -aG sudo developer
+    ubuntu.exe config --default-user developer
+
+  Features:
+  - Docker and Docker Compose
+  - Python 3 with pip
+  - Node.js and npm
+  - Git and development tools
+  - VS Code (accessible via 'code .')

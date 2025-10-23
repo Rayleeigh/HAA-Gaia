@@ -155,10 +155,16 @@ class VMService:
         config['name'] = vm_data.name
         config['provider'] = vm_data.provider
 
-        if vm_data.provider == 'proxmox':
-            return self.vagrant_generator.generate_proxmox(config)
-        else:
-            return self.vagrant_generator.generate(config)
+        # Use provider-specific generator methods
+        generator_map = {
+            'proxmox': self.vagrant_generator.generate_proxmox,
+            'virtualbox': self.vagrant_generator.generate_virtualbox,
+            'hyperv': self.vagrant_generator.generate_hyperv,
+            'wsl': self.vagrant_generator.generate_wsl,
+        }
+
+        generator = generator_map.get(vm_data.provider, self.vagrant_generator.generate)
+        return generator(config)
 
     def _save_vagrantfile(self, vm_id: int, content: str) -> str:
         """Save Vagrantfile to disk"""

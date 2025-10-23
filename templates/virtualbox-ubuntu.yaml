@@ -1,0 +1,41 @@
+name: "Ubuntu 22.04 Desktop - VirtualBox"
+description: "Ubuntu 22.04 LTS with desktop environment for VirtualBox"
+provider: virtualbox
+tags:
+  - ubuntu
+  - linux
+  - desktop
+  - virtualbox
+
+config:
+  box: "bento/ubuntu-22.04"
+  hostname: "ubuntu-desktop"
+  cpus: 2
+  memory: 4096
+
+  provider_config:
+    gui: true
+    vram: 128
+    accelerate3d: "on"
+    clipboard: "bidirectional"
+    draganddrop: "bidirectional"
+
+  networks:
+    - type: "private_network"
+      ip: "192.168.56.10"
+    - type: "forwarded_port"
+      guest_port: 22
+      host_port: 2222
+
+  synced_folders:
+    - host_path: "."
+      guest_path: "/vagrant"
+      type: "virtualbox"
+
+  provisioners:
+    - type: "shell"
+      inline:
+        - "apt-get update"
+        - "apt-get install -y ubuntu-desktop"
+        - "apt-get install -y build-essential curl wget git vim"
+        - "echo 'Desktop environment installed!'"

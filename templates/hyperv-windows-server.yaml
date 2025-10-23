@@ -1,0 +1,45 @@
+name: "Windows Server 2022 - Hyper-V"
+description: "Windows Server 2022 with common roles and features"
+provider: hyperv
+tags:
+  - windows
+  - server
+  - hyperv
+
+config:
+  box: "gusztavvargadr/windows-server-2022-standard"
+  hostname: "winserver2022"
+  cpus: 4
+  memory: 8192
+
+  provider_config:
+    enable_virtualization_extensions: true
+    linked_clone: true
+    differencing_disk: true
+    vm_integration_services:
+      guest_service_interface: true
+      heartbeat: true
+      key_value_pair_exchange: true
+      shutdown: true
+      time_synchronization: true
+      vss: true
+
+  networks:
+    - type: "private_network"
+      ip: "192.168.56.20"
+    - type: "forwarded_port"
+      guest_port: 3389  # RDP
+      host_port: 33389
+    - type: "forwarded_port"
+      guest_port: 5985  # WinRM HTTP
+      host_port: 5985
+    - type: "forwarded_port"
+      guest_port: 5986  # WinRM HTTPS
+      host_port: 5986
+
+  provisioners:
+    - type: "shell"
+      inline:
+        - "Install-WindowsFeature -Name Web-Server -IncludeManagementTools"
+        - "Install-WindowsFeature -Name NET-Framework-45-Core"
+        - "Write-Host 'Windows Server configured successfully!'"

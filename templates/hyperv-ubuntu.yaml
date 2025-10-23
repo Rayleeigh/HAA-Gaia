@@ -1,0 +1,43 @@
+name: "Ubuntu 22.04 Server - Hyper-V"
+description: "Ubuntu 22.04 LTS server optimized for Hyper-V"
+provider: hyperv
+tags:
+  - ubuntu
+  - linux
+  - server
+  - hyperv
+
+config:
+  box: "bento/ubuntu-22.04"
+  hostname: "ubuntu-hyperv"
+  cpus: 2
+  memory: 4096
+
+  provider_config:
+    enable_virtualization_extensions: true
+    linked_clone: true
+    vm_integration_services:
+      guest_service_interface: true
+      heartbeat: true
+      key_value_pair_exchange: true
+      shutdown: true
+      time_synchronization: true
+
+  networks:
+    - type: "private_network"
+      ip: "192.168.56.25"
+    - type: "forwarded_port"
+      guest_port: 22
+      host_port: 2224
+
+  provisioners:
+    - type: "shell"
+      inline:
+        - "apt-get update"
+        - "apt-get upgrade -y"
+        - "apt-get install -y linux-tools-virtual linux-cloud-tools-virtual"
+        - "apt-get install -y docker.io docker-compose"
+        - "systemctl enable docker"
+        - "systemctl start docker"
+        - "usermod -aG docker vagrant"
+        - "echo 'Hyper-V Ubuntu server ready!'"

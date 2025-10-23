@@ -168,41 +168,86 @@ function CreateVM() {
           </div>
         </div>
 
+        {/* Proxmox Configuration */}
         {formData.provider === 'proxmox' && (
           <div className="form-section">
             <h2>Proxmox Configuration</h2>
-
             <div className="form-group">
               <label htmlFor="node">Node</label>
-              <input
-                type="text"
-                id="node"
-                value={formData.config.provider_config.node}
-                onChange={(e) => updateProviderConfig('node', e.target.value)}
-                placeholder="pve"
-              />
+              <input type="text" id="node" value={formData.config.provider_config.node || 'pve'}
+                onChange={(e) => updateProviderConfig('node', e.target.value)} placeholder="pve" />
             </div>
-
             <div className="form-group">
               <label htmlFor="storage">Storage</label>
-              <input
-                type="text"
-                id="storage"
-                value={formData.config.provider_config.storage}
-                onChange={(e) => updateProviderConfig('storage', e.target.value)}
-                placeholder="local-lvm"
-              />
+              <input type="text" id="storage" value={formData.config.provider_config.storage || 'local-lvm'}
+                onChange={(e) => updateProviderConfig('storage', e.target.value)} placeholder="local-lvm" />
             </div>
-
             <div className="form-group">
               <label htmlFor="disk_size">Disk Size</label>
-              <input
-                type="text"
-                id="disk_size"
-                value={formData.config.provider_config.disk_size}
-                onChange={(e) => updateProviderConfig('disk_size', e.target.value)}
-                placeholder="32G"
-              />
+              <input type="text" id="disk_size" value={formData.config.provider_config.disk_size || '32G'}
+                onChange={(e) => updateProviderConfig('disk_size', e.target.value)} placeholder="32G" />
+            </div>
+          </div>
+        )}
+
+        {/* VirtualBox Configuration */}
+        {formData.provider === 'virtualbox' && (
+          <div className="form-section">
+            <h2>VirtualBox Configuration</h2>
+            <div className="form-group">
+              <label><input type="checkbox" checked={formData.config.provider_config.gui || false}
+                onChange={(e) => updateProviderConfig('gui', e.target.checked)} /> Enable GUI Mode</label>
+            </div>
+            <div className="form-group">
+              <label htmlFor="disk_size_mb">Disk Size (MB)</label>
+              <input type="number" id="disk_size_mb" value={formData.config.disk_size || 32768}
+                onChange={(e) => updateConfig('disk_size', parseInt(e.target.value))} />
+            </div>
+          </div>
+        )}
+
+        {/* Hyper-V Configuration */}
+        {formData.provider === 'hyperv' && (
+          <div className="form-section">
+            <h2>Hyper-V Configuration</h2>
+            <div className="form-group">
+              <label htmlFor="generation">Generation</label>
+              <select id="generation" value={formData.config.generation || 2}
+                onChange={(e) => updateConfig('generation', parseInt(e.target.value))}>
+                <option value="1">Generation 1</option>
+                <option value="2">Generation 2 (Recommended)</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label><input type="checkbox" checked={formData.config.provider_config.enable_virtualization_extensions || false}
+                onChange={(e) => updateProviderConfig('enable_virtualization_extensions', e.target.checked)} /> Enable Nested Virtualization</label>
+            </div>
+            <div className="form-group">
+              <label><input type="checkbox" checked={formData.config.provider_config.linked_clone || false}
+                onChange={(e) => updateProviderConfig('linked_clone', e.target.checked)} /> Use Linked Clone</label>
+            </div>
+          </div>
+        )}
+
+        {/* WSL Configuration */}
+        {formData.provider === 'wsl' && (
+          <div className="form-section">
+            <h2>WSL Configuration</h2>
+            <div className="form-group">
+              <label htmlFor="source_distro">Source Distribution</label>
+              <input type="text" id="source_distro" value={formData.config.source_distro || 'Ubuntu'}
+                onChange={(e) => updateConfig('source_distro', e.target.value)} placeholder="Ubuntu-22.04" />
+              <small style={{color: 'var(--text-secondary)', fontSize: '0.875rem'}}>Clone from existing WSL distribution</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="install_location">Install Location</label>
+              <input type="text" id="install_location" value={formData.config.install_location || ''}
+                onChange={(e) => updateConfig('install_location', e.target.value)} placeholder="C:\WSL\MyDistro" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="default_user">Default User</label>
+              <input type="text" id="default_user" value={formData.config.default_user || ''}
+                onChange={(e) => updateConfig('default_user', e.target.value)} placeholder="developer" />
             </div>
           </div>
         )}
