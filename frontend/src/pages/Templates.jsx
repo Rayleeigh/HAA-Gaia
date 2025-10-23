@@ -28,15 +28,29 @@ function Templates() {
 
   return (
     <div>
-      <div className="page-header">
-        <h1>Templates</h1>
-        <p>Reusable VM configuration templates</p>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+        <div>
+          <h1>Templates</h1>
+          <p>Reusable VM configuration templates</p>
+        </div>
+
+        {/* Create New Template button */}
+        <Link to="/templates/builder" className="btn btn-primary">
+          <FaPlus style={{ marginRight: '0.5rem' }} />
+          Create new template
+        </Link>
       </div>
 
       {templates.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
           <FaLayerGroup style={{ fontSize: '3rem', color: 'var(--text-secondary)', marginBottom: '1rem' }} />
-          <p style={{ color: 'var(--text-secondary)' }}>No templates yet</p>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>No templates yet</p>
+
+          {/* Empty state CTA */}
+          <Link to="/templates/builder" className="btn btn-primary">
+            <FaPlus style={{ marginRight: '0.5rem' }} />
+            Create your first template
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-3">
