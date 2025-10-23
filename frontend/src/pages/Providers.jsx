@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { FaCheck, FaTimes, FaPlug } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
+import { FaCheck, FaTimes, FaPlug, FaCog } from 'react-icons/fa'
 import { providerAPI } from '../services/api'
 
 function Providers() {
@@ -43,8 +44,13 @@ function Providers() {
   return (
     <div>
       <div className="page-header">
-        <h1>Providers</h1>
-        <p>Manage virtualization provider integrations</p>
+        <div>
+          <h1>Providers</h1>
+          <p>Manage virtualization provider integrations</p>
+        </div>
+        <Link to="/providers/settings" className="btn btn-primary">
+          <FaCog /> Configure Providers
+        </Link>
       </div>
 
       <div className="grid grid-cols-2">

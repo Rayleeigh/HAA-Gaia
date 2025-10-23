@@ -4,6 +4,9 @@ from typing import List, Dict, Any
 from app.services.providers.base import ProviderRegistry
 from app.schemas.provider import ProviderInfo, ProviderStatus
 
+# Import all providers to ensure they register themselves
+import app.services.providers
+
 router = APIRouter()
 
 

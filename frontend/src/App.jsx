@@ -5,6 +5,7 @@ import VMList from './pages/VMList'
 import CreateVM from './pages/CreateVM'
 import Templates from './pages/Templates'
 import Providers from './pages/Providers'
+import ProviderSettings from './pages/ProviderSettings'
 import './App.css'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/vms/create" element={<CreateVM />} />
           <Route path="/templates" element={<Templates />} />
           <Route path="/providers" element={<Providers />} />
+          <Route path="/providers/settings" element={<ProviderSettings />} />
         </Routes>
       </Layout>
     </Router>
