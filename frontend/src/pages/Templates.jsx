@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { FaLayerGroup, FaDownload } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
+import { FaLayerGroup, FaDownload, FaPlus } from 'react-icons/fa'
 import { templateAPI } from '../services/api'
 
 function Templates() {

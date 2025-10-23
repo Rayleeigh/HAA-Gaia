@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import VMList from './pages/VMList'
 import CreateVM from './pages/CreateVM'
 import Templates from './pages/Templates'
+import TemplateBuilder from './pages/TemplateBuilder'
 import Providers from './pages/Providers'
 import ProviderSettings from './pages/ProviderSettings'
 import './App.css'
@@ -17,6 +18,7 @@ function App() {
           <Route path="/vms" element={<VMList />} />
           <Route path="/vms/create" element={<CreateVM />} />
           <Route path="/templates" element={<Templates />} />
+          <Route path="/templates/builder" element={<TemplateBuilder />} />
           <Route path="/providers" element={<Providers />} />
           <Route path="/providers/settings" element={<ProviderSettings />} />
         </Routes>
